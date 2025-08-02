@@ -1,0 +1,58 @@
+{% extends "layout/base.html" %}
+
+{% block title %}
+{{ page_title }}
+{% endblock %}
+
+
+{% block dateStyle %}
+<link href="../../static/css/persian-datepicker.css" rel="stylesheet">
+{% endblock %}
+
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="text-center mb-4">درج کار</h2>
+            <form class="card p-4 shadow-sm" method="POST" novalidate>
+                {{ form.hidden_tag() }}
+
+                <div class="mb-3">
+                    {{ form.title.label(class="form-label") }}
+                    {{ form.title(class="form-control", id="title", required=false) }}
+                    {% for error in form.title.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="mb-3">
+                    {{ form.description.label(class="form-label") }}
+                    {{ form.description(class="form-control", id="description", required=false , row=4) }}
+                    {% for error in form.description.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.deadline.label(class="form-label") }}
+                    {{ form.deadline(class="form-control", id="deadline", required=false) }}
+                    {% for error in form.deadline.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                {{ form.submit(class="btn btn-primary w-100") }}
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+<script src="../../static/js/jquery.min.js"></script>
+<script src="../../static/js/persian-date.js"></script>
+<script src="../../static/js/persian-datepicker.js"></script>
+<script src="../../static/js/page.js"></script>
+
+{% endblock %}

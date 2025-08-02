@@ -1,0 +1,26 @@
+{% extends "layout/base.html" %}
+
+{% block title %}
+    {{ page_title }}
+{% endblock %}
+
+
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">{{ current_user.is_authenticated and current_user.name or 'کاربر' }} به داشبرد خوش آمدید </h2>
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <a href="{{url_for('task.create')}}" class="btn btn-success w-100">ایجاد تسک</a>
+        </div>
+        <div class="col-md-4">
+            <a href="{{url_for('task.list')}}" class="btn btn-primary w-100">تسک ها</a>
+        </div>
+        <div class="col-md-4">
+            <a href="./admin/index.html" class="btn btn-warning w-100">پنل مدیریت</a>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

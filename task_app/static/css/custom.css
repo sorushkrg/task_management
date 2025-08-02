@@ -1,0 +1,7 @@
+:root {
+    --bs-font-sans-serif: "IRANYekan", Arial, sans-serif;
+}
+
+body {
+    font-family: "IRANYekan", Arial, sans-serif !important;
+}

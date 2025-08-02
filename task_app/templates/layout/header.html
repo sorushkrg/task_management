@@ -1,0 +1,11 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="{{url_for('main.index')}}"> {{APP_NAME}} </a>
+
+        <div>
+            {% if current_user.is_authenticated %}
+            <a class="btn btn-light btn-sm" href="{{ url_for('auth.logout') }}">خروج</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>

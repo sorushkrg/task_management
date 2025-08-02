@@ -1,0 +1,75 @@
+{% extends "layout/base.html" %}
+
+{% block title %}
+    {{ page_title }}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">کار های شما</h2>
+
+    {% if request.args.get('create') == '1' %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        تسک با موفقیت ثبت شد!
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>موضوع کار</th>
+            <th>وضعیت</th>
+            <th>تاریخ اتمام کار</th>
+            <th>عملیات</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for task in result %}
+        <tr>
+            <td>{{ loop.index0 + 1 + ((page - 1) * per_page) }}</td>
+            <td>{{ task.title }}</td>
+            {% set status_text, status_class = status(task.status) %}
+            <td><span class="badge bg-{{ status_class }}">{{ status_text }}</span></td>
+            <td>{{ to_jalali(task.due_date) }}</td>
+            <td>
+                <a class="btn btn-primary btn-sm" href="./edit.html">Edit</a>
+                <a class="btn btn-danger btn-sm" href="./index.html">Delete</a>
+                <a class="btn btn-secondary btn-sm" href="./files.html">Files</a>
+            </td>
+
+        </tr>
+        {% else %}
+        <tr>
+            <td class="text-center" colspan="5">کاری برای نمایش وجود ندارد.</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% if total_pages > 1 %}
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if page > 1 %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('task.list', page=page - 1) }}">قبلی</a>
+            </li>
+            {% endif %}
+
+            {% for p in range(1, total_pages + 1) %}
+            <li class="page-item {% if p == page %}active{% endif %}">
+                <a class="page-link" href="{{ url_for('task.list', page=p) }}">{{ p }}</a>
+            </li>
+            {% endfor %}
+
+            {% if page < total_pages %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('task.list', page=page + 1) }}">بعدی</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}
