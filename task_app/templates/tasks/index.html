@@ -1,7 +1,7 @@
 {% extends "layout/base.html" %}
 
 {% block title %}
-    {{ page_title }}
+{{ page_title }}
 {% endblock %}
 
 {% block content %}
@@ -11,9 +11,24 @@
     {% if request.args.get('create') == '1' %}
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         تسک با موفقیت ثبت شد!
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
     </div>
     {% endif %}
+
+    {% if request.args.get('edit') == '1' %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        تسک با موفقیت ویرایش شد!
+        <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
+    </div>
+    {% endif %}
+
+    {% if request.args.get('delete') == '1' %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        تسک با موفقیت حذف شد!
+        <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
+    </div>
+    {% endif %}
+
 
     <table class="table table-striped">
         <thead>
@@ -34,8 +49,9 @@
             <td><span class="badge bg-{{ status_class }}">{{ status_text }}</span></td>
             <td>{{ to_jalali(task.due_date) }}</td>
             <td>
-                <a class="btn btn-primary btn-sm" href="./edit.html">Edit</a>
-                <a class="btn btn-danger btn-sm" href="./index.html">Delete</a>
+                <a class="btn btn-primary btn-sm"
+                   href="{{ url_for('task.edit', task_id=encode_id(task.id)) }}">ویرایش</a>
+                <a class="btn btn-danger btn-sm" href="{{ url_for('task.delete', task_id=encode_id(task.id)) }}">حذف</a>
                 <a class="btn btn-secondary btn-sm" href="./files.html">Files</a>
             </td>
 

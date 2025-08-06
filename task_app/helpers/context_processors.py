@@ -1,12 +1,13 @@
 import os
 import jdatetime
 from flask import request
+from task_app.utils.hashid import encode_id, decode_id
 
 
 def inject_globals():
     def to_jalali(value):
         if not value:
-            return "-"
+            return ""
         return jdatetime.datetime.fromgregorian(datetime=value).strftime('%Y/%m/%d')
 
     def status(value):
@@ -27,6 +28,8 @@ def inject_globals():
         "to_jalali": to_jalali,
         "status": status,
         "request" : request,
+        "encode_id": encode_id,
+        "decode_id": decode_id
 
     }
 #
