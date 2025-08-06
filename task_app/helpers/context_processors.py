@@ -15,9 +15,9 @@ def inject_globals():
 
             case 0:
                 return "در حال انجام", "info"  # آبی روشن
-            case "done":
+            case 1:
                 return "انجام شده", "success"  # سبز
-            case "canceled":
+            case 2:
                 return "لغو شده", "danger"  # قرمز
             case _:
                 return "نامشخص", "dark"

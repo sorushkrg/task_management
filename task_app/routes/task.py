@@ -5,7 +5,7 @@ from sqlalchemy import select
 from werkzeug.utils import redirect
 
 from task_app import SessionLocal
-from task_app.forms import createTaskForm
+from task_app.forms import CreateTaskForm
 from task_app.models.models import Tasks
 from task_app.utils.hashid import decode_id
 
@@ -15,7 +15,7 @@ task_bp = Blueprint('task', __name__)
 @task_bp.route('/create',methods=['POST','GET'])
 @login_required
 def create():
-    form = createTaskForm()
+    form = CreateTaskForm()
     if form.validate_on_submit():
         deadline = form.deadline.data
         g_date = None
@@ -54,10 +54,11 @@ def edit(task_id):
         if not task:
             return redirect(url_for('task.list'))
 
-        form = createTaskForm(obj=task)
+        form = CreateTaskForm(obj=task)
 
         if request.method == 'GET' and task.due_date:
             form.deadline.data = jdatetime.date.fromgregorian(date=task.due_date).isoformat().replace('-', '/')
+            form.status.data = str(task.status)
 
         if form.validate_on_submit():
 
@@ -72,6 +73,7 @@ def edit(task_id):
             task.title = form.title.data
             task.description = form.description.data
             task.due_date = g_date
+            task.status = int(form.status.data)
 
             session.commit()
             return redirect(url_for("task.list", edit=1))
@@ -117,9 +119,9 @@ def list():
 
     with SessionLocal() as session:
         stmt = select(Tasks).where(Tasks.user_id == current_user.id)
-        total_tasks = session.execute(stmt).scalars().all()  # لیست کامل تسک‌ها
+        total_tasks = session.execute(stmt).scalars().all()
         total_count = len(total_tasks)
-        total_pages = (total_count + per_page - 1) // per_page  # محاسبه تعداد صفحات
+        total_pages = (total_count + per_page - 1) // per_page
 
         start = (page - 1) * per_page
         end = start + per_page

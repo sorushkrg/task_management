@@ -3,8 +3,8 @@ import re
 import jdatetime
 from flask_wtf import FlaskForm
 from sqlalchemy import select
-from wtforms import StringField, PasswordField, SubmitField, TextAreaField
-from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
+from wtforms import StringField, PasswordField, SubmitField, TextAreaField, SelectField
+from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError, Regexp
 from task_app.db import SessionLocal
 from task_app.models.models import Users
 
@@ -33,27 +33,21 @@ class RegisterForm(FlaskForm):
     submit = SubmitField("ثبت‌نام")
 
     def validate_username(self, field):
-     with SessionLocal() as session:
-
-        stmt = select(Users).where(Users.name == field.data)
-        result = session.execute(stmt).scalars().first()
-        if result:
-            raise ValidationError("این نام کاربری قبلاً ثبت شده است.")
+        with SessionLocal() as session:
+            stmt = select(Users).where(Users.name == field.data)
+            result = session.execute(stmt).scalars().first()
+            if result:
+                raise ValidationError("این نام کاربری قبلاً ثبت شده است.")
 
     def validate_email(self, field):
         with SessionLocal() as session:
-
             stmt = select(Users).where(Users.email == field.data)
             result = session.execute(stmt).scalars().first()
             if result:
                 raise ValidationError("این ایمیل قبلاً ثبت شده است.")
 
 
-
-
-
 class LoginForm(FlaskForm):
-
     email = StringField("ایمیل", validators=[
         DataRequired(message="ایمیل را وارد کنید."),
         Email(message="لطفاً یک ایمیل معتبر وارد کنید.")
@@ -67,22 +61,33 @@ class LoginForm(FlaskForm):
     submit = SubmitField("ورود")
 
 
-
-class createTaskForm(FlaskForm):
+class CreateTaskForm(FlaskForm):
     title = StringField("موضوع کار", validators=[
         DataRequired(message="موضوع کار را وارد کنید."),
-        Length( max=51, message="موضوع کار  تا 50 کاراکتر باشد.")
+        Length(max=51, message="موضوع کار  تا 50 کاراکتر باشد."),
+        Regexp(r'^[^@#$%^&*]+$', message="کاراکترهای خاص مجاز نیستند")
     ])
 
     description = TextAreaField("توضیحات", validators=[
         DataRequired(message="توضیحات را وارد کنید."),
-        Length( min=3, message="توضیحات  بیشتر از 3  کاراکتر باشد.")
+        Length(min=3, message="توضیحات  بیشتر از 3  کاراکتر باشد."),
+
     ])
 
     deadline = StringField("تاریخ اتمام کار")
 
-    submit = SubmitField("درج کار")
+    status = SelectField(
+        'وضعیت',
+        choices=[
+            ('0', 'در حال انجام'),
+            ('1', 'انجام شده'),
+            ('2', 'لغو شده')
+        ],
+        coerce=str,
+        default='0'
+    )
 
+    submit = SubmitField("درج کار")
 
     def validate_deadline(form, field):
         if field.data:
@@ -93,4 +98,3 @@ class createTaskForm(FlaskForm):
                 jdatetime.date.fromisoformat(field.data.replace('/', '-'))
             except ValueError:
                 raise ValidationError('تاریخ معتبر نیست.')
-
