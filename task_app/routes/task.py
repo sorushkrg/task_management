@@ -1,5 +1,5 @@
 import jdatetime
-from flask import Blueprint, render_template , url_for ,request
+from flask import Blueprint, render_template, url_for, request, abort
 from flask_login import login_required, current_user
 from sqlalchemy import select
 from werkzeug.utils import redirect
@@ -42,7 +42,7 @@ def edit(task_id):
     real_id = decode_id(task_id)
 
     if not real_id:
-        return redirect(url_for("task.list", edit=1))
+        return abort(404)
 
     with SessionLocal() as session:
         stmt = select(Tasks).where(
